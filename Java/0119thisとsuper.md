@@ -139,3 +139,75 @@ public class Main {
 ---
 
 # 変数のthisと、メソッドのthis()の違い
+|項目	|変数のthis	|メソッドのthis() |
+|:-----------------|:------------------|:-------------------|
+|目的|現在のインスタンスの変数やメソッドを参照する.ローカル変数や引数とインスタンス変数を区別するために使う|	現在のクラスの別のコンストラクタを呼び出す.コンストラクタのコードを再利用し、冗長な記述を避けるために使う|
+|使用場所	|メソッドやコンストラクタ内	|コンストラクタの先頭のみ|
+|対象	|インスタンス変数やインスタンスメソッド	|別のコンストラクタ|
+|省略可能か|	名前の重複がなければ省略可能|	省略不可|
+|動作のタイミング	|実行時	|コンストラクタ呼び出し時|
+
+## 変数のthis
+```
+public class Person {
+    private String name; // インスタンス変数
+
+    public void setName(String name) { // 引数nameが存在
+        this.name = name; // インスタンス変数nameに引数nameを代入
+    }
+
+    public void display() {
+        System.out.println("Name: " + this.name);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Person person = new Person();
+        person.setName("Taro"); // 引数で"名前"を設定
+        person.display();       // Name: Taro
+    }
+}
+
+```
+実行の流れ
+setNameメソッドに引数nameが渡される。
+this.nameはインスタンス変数を指し、単なるnameはローカル変数または引数を指す。
+this.name = name; によって、引数nameの値がインスタンス変数nameに代入される。
+
+
+## メソッドのthis()
+コンストラクタの先頭でのみ使用可能。
+引数のパターンによって、どのコンストラクタを呼び出すかが決定される。
+```
+public class Person {
+    private String name;
+    private int age;
+
+    // コンストラクタ1: 名前のみを設定
+    public Person(String name) {
+        this(name, 0); // コンストラクタ2を呼び出し
+    }
+
+    // コンストラクタ2: 名前と年齢を設定
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public void display() {
+        System.out.println("Name: " + name + ", Age: " + age);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Person person1 = new Person("Taro");         // コンストラクタ1を呼び出し
+        Person person2 = new Person("Hanako", 25);   // コンストラクタ2を呼び出し
+
+        person1.display(); // Name: Taro, Age: 0
+        person2.display(); // Name: Hanako, Age: 25
+    }
+}
+
+```
